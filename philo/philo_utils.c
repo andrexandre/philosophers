@@ -33,9 +33,34 @@ int	ft_atoi(const char *nptr)
 	return (n * mc);
 }
 
-t_philo	*ph(void)
+void	ft_bzero(void *s, size_t n)
 {
-	static t_philo	philo;
+	unsigned int	i;
+	char			*ptr;
 
-	return (&philo);
+	i = 0;
+	ptr = (char *)s;
+	while (i < n)
+	{
+		ptr[i] = 0;
+		i++;
+	}
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*dest;
+
+	dest = malloc(nmemb * size);
+	if (!dest)
+		return (NULL);
+	ft_bzero(dest, nmemb * size);
+	return (dest);
+}
+
+t_table	*tb(void)
+{
+	static t_table	table;
+
+	return (&table);
 }

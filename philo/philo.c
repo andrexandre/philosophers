@@ -4,7 +4,7 @@ int	error(int ac, char **av)
 {
 	int		i;
 	int		j;
-	char 	*err_msg;
+	char	*err_msg;
 
 	i = 0;
 	err_msg = "syntax: ./philo number_of_philosophers time_to_die \
@@ -16,29 +16,58 @@ time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n";
 		j = -1;
 		while (av[i][++j])
 			if (!ft_isdigit(av[i][j]))
-				return (printf("syntax: non digit sent\n"), 1);
+				return (printf("syntax: non digit/negative number sent\n"), 1);
 	}
-	ph()->n_of_philosophers = ft_atoi(av[1]);
-	ph()->time_to_die = ft_atoi(av[2]);
-	ph()->time_to_eat = ft_atoi(av[3]);
-	ph()->time_to_sleep = ft_atoi(av[4]);
+	tb()->n_of_philo = ft_atoi(av[1]);
+	tb()->time_to_die = ft_atoi(av[2]);
+	tb()->time_to_eat = ft_atoi(av[3]);
+	tb()->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
-		ph()->meals_needed = ft_atoi(av[5]);
+		tb()->meals_needed = ft_atoi(av[5]);
 	else
-		ph()->meals_needed = -1;
+		tb()->meals_needed = -1;
 	return (0);
 }
 
-// to-do: finish parsing (if O < i < 60 quit)
-int	main(int ac, char **av)
+int	init_table(void)
 {
-	// (void)ac;
-	// (void)av;
-	if (error(ac, av))
-		return (1);
-	else
-		printf("nf: %d\nttd: %d\ntte: %d\ntts: %d\nmn: %d\n",
-			ph()->n_of_philosophers, ph()->time_to_die, ph()->time_to_eat,
-			ph()->time_to_sleep, ph()->meals_needed);
+	tb()->forks = ft_calloc(tb()->n_of_philo, sizeof(t_fork));
+	if (!tb()->forks)
+		return (printf("error: malloc\n"), 1);
+	tb()->philos = ft_calloc(tb()->n_of_philo, sizeof(t_philo));
+	if (!tb()->philos)
+		return (printf("error: malloc\n"), 1);
+	int i = -1;
+	while (++i < tb()->n_of_philo)
+		tb()->philos[i].id = i; 
 	return (0);
 }
+
+void	clean_table(void)
+{
+	// int	i;
+
+	// i = -1;
+	// while (++i < tb()->n_of_philo)
+	// 	pthread_mutex_destroy(&tb()->forks[i].mtx);
+	free(tb()->forks);
+	free(tb()->philos);
+}
+
+int	main(int ac, char **av)
+{
+	if (error(ac, av))
+		return (1);
+	if (init_table())
+		return (1);
+	clean_table();
+	return (0);
+}
+
+/*
+◦ timestamp_in_ms X has taken a fork
+◦ timestamp_in_ms X is eating
+◦ timestamp_in_ms X is sleeping
+◦ timestamp_in_ms X is thinking
+◦ timestamp_in_ms X died
+*/
