@@ -7,11 +7,11 @@ CYAN	= \033[1;36m
 
 RM		= rm -f
 NAME	= philo
-CFLAGS	= -Wall -Wextra -Werror #-g -pthread -fsanitize=thread
+CFLAGS	= -Wall -Wextra -Werror -g# -pthread -fsanitize=thread
 
 OBJDIR	= objs
 
-SRC		= philo.c philo_utils.c
+SRC		= philo.c philo_utils.c philo_utils2.c
 OBJ		= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
 
 all:	$(NAME) clean
@@ -38,12 +38,18 @@ fclean:	clean
 re:	fclean all
 
 VAR = 5 800 200 200 7
+# VAR = 4 410 200 200
+# VAR = 21474836491 410 200 200
+# VAR = 5
 
 run: ${NAME}
 	@./${NAME} ${VAR}
 
 v: ${NAME}
 	@valgrind --leak-check=full --show-leak-kinds=all ./${NAME} ${VAR}
+
+vh: ${NAME}
+	@valgrind --tool=helgrind --history-level=full ./${NAME} ${VAR}
 
 e: fclean
 
