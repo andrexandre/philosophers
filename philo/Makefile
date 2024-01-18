@@ -7,7 +7,7 @@ CYAN	= \033[1;36m
 
 RM		= rm -f
 NAME	= philo
-CFLAGS	= -Wall -Wextra -Werror -g# -pthread -fsanitize=thread
+CFLAGS	= -Wall -Wextra -Werror -g -pthread# -fsanitize=thread
 
 OBJDIR	= objs
 

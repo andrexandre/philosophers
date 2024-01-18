@@ -26,7 +26,8 @@
 
 enum e_action
 {
-	A_FORK,
+	A_FFORK,
+	A_SFORK,
 	A_EAT,
 	A_SLEEP,
 	A_THINK,
@@ -44,10 +45,12 @@ typedef struct s_fork
 typedef struct s_philo
 {
 	int				id;
+	int				full;
 	int				meals_eaten;
-	int				last_meal;
-	t_fork			*left_fork;
-	t_fork			*right_fork;
+	int				last_meal_time;
+	t_fork			*first_fork;
+	t_fork			*second_fork;
+	t_mtx			ph_mtx;
 	pthread_t		thread;
 }					t_philo;
 
@@ -61,7 +64,9 @@ typedef struct s_table
 	int				start_time;
 	int				finished;
 	int				all_threads_ready;
-	t_mtx			mtx;
+	int				threads_running_num;
+	pthread_t		monitor;
+	t_mtx			tb_mtx;
 	t_mtx			print;
 	t_fork			*forks;
 	t_philo			*philos;
@@ -75,6 +80,11 @@ t_table	*tb(void);
 
 // philo_utils2
 long	get_time(void);
-void	print_action(int n_philo, enum e_action action);
+void	print_action(t_philo *philo, enum e_action action);
+
+/* FUNCTIONS */
+int	philo_finished(void);
+void	set_int(t_mtx *mtx, int *dest, int value);
+int	get_int(t_mtx *mtx, int *dest);
 
 #endif
