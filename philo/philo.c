@@ -43,6 +43,7 @@ int	init_table(void)
 	pthread_mutex_init(&tb()->print, NULL);
 	while (++i < tb()->n_of_philo)
 	{
+		// tb()->philos[i].last_meal_time = get_time();
 		tb()->philos[i].first_fork = &tb()->forks[(i + 1) % tb()->n_of_philo];
 		tb()->philos[i].second_fork = &tb()->forks[i];
 		if (i % 2 == 0)

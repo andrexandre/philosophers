@@ -16,9 +16,9 @@ void	print_action(t_philo *philo, enum e_action action)
 	elapsed = get_time() - tb()->start_time;
 	if (philo->full)
 		return ;
+	pthread_mutex_lock(&tb()->print);
 	if (philo_finished())
 		return ;
-	pthread_mutex_lock(&tb()->print);
 	if (action == A_FFORK || action == A_SFORK)
 		printf(WHITE "%d %d has taken a fork" , elapsed, philo->id);
 	else if (action == A_EAT)
