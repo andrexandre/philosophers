@@ -74,11 +74,11 @@ void	clean_table(void)
 	free(tb()->philos);
 }
 
-void	wait_all_threads(void)
-{
-	while (!get_int(&tb()->tb_mtx, &tb()->all_threads_ready))
-		;
-}
+// void	wait_all_threads(void)
+// {
+// 	while (!get_int(&tb()->tb_mtx, &tb()->all_threads_ready))
+// 		;
+// }
 
 void	ft_usleep(int time)
 {
@@ -92,114 +92,101 @@ void	ft_usleep(int time)
 		usleep(100);
 	}
 }
-
-void	eat(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->first_fork->mtx);
-	print_action(philo, A_FFORK);
-	pthread_mutex_lock(&philo->second_fork->mtx);
-	print_action(philo, A_SFORK);
-	set_int(&philo->ph_mtx, &philo->last_meal_time, get_time());
-	philo->meals_eaten++;
-	print_action(philo, A_EAT);
-	ft_usleep(tb()->time_to_eat * 1000);
-	if (tb()->meals_needed != -1 && philo->meals_eaten == tb()->meals_needed)
-		set_int(&philo->ph_mtx, &philo->full, 1);
-	pthread_mutex_unlock(&philo->first_fork->mtx);
-	pthread_mutex_unlock(&philo->second_fork->mtx);
-}
-
-// increate the threads running to sync with the monitor
-void	increase_int(t_mtx *mtx, int *dest)
-{
-	pthread_mutex_lock(mtx);
-	(*dest)++;
-	pthread_mutex_unlock(mtx);
-}
-
-void	*routine(void *data)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)data;
-	wait_all_threads();
-
-	set_int(&philo->ph_mtx, &philo->last_meal_time, get_time());
-
-	increase_int(&tb()->tb_mtx, &tb()->threads_running_num);
-	while (!philo_finished())
-	{
-		if (philo->full)
-			break ;
-		eat(philo);
-		print_action(philo, A_SLEEP);
-		ft_usleep(tb()->time_to_sleep * 1000);
-		print_action(philo, A_THINK);
-	}
-	return (NULL);
-}
-
-int	all_thread_running(void)
-{
-	int	ret;
-
-	ret = 0;
-	pthread_mutex_lock(&tb()->tb_mtx);
-	if (tb()->threads_running_num == tb()->n_of_philo)
-		ret = 1;
-	pthread_mutex_unlock(&tb()->tb_mtx);
-	return (ret);
-}
-
-int	philo_died(t_philo *philo)
-{
-	int elapsed;
-
-	if (get_int(&philo->ph_mtx, &philo->full))
-		return (0);
-	elapsed = get_time() - get_int(&philo->ph_mtx, &philo->last_meal_time);
-	if (elapsed > tb()->time_to_die)
-	{
-		printf("philo %d died\n", philo->id);
-		return (1);
-	}
-	return (0);
-}
-
-void	*monitor(void *data)
-{
-	int	i;
-	(void)data;
-	while (!all_thread_running())
-		;
-	while (!philo_finished())
-	{
-		i = -1;
-		while (++i < tb()->n_of_philo)
-		{
-			if (philo_died(&tb()->philos[i]))
-			{
-				set_int(&tb()->tb_mtx, &tb()->finished, 1);
-				print_action(&tb()->philos[i], A_DIE);
-			}
-		}
-	}
-	return (NULL);
-}
-
-void	*lone_philo(void *data)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)data;
-	wait_all_threads();
-	set_int(&philo->ph_mtx, &philo->last_meal_time, get_time());
-	increase_int(&tb()->tb_mtx, &tb()->threads_running_num);
-	print_action(philo, A_SLEEP);
-	while (!philo_finished())
-		ft_usleep(200);
-	return (NULL);
-}
+// void	eat(t_philo *philo)
+// {
+// 	pthread_mutex_lock(&philo->first_fork->mtx);
+// 	print_action(philo, A_FFORK);
+// 	pthread_mutex_lock(&philo->second_fork->mtx);
+// 	print_action(philo, A_SFORK);
+// 	set_int(&philo->ph_mtx, &philo->last_meal_time, get_time());
+// 	philo->meals_eaten++;
+// 	print_action(philo, A_EAT);
+// 	ft_usleep(tb()->time_to_eat * 1000);
+// 	if (tb()->meals_needed != -1 && philo->meals_eaten == tb()->meals_needed)
+// 		set_int(&philo->ph_mtx, &philo->full, 1);
+// 	pthread_mutex_unlock(&philo->first_fork->mtx);
+// 	pthread_mutex_unlock(&philo->second_fork->mtx);
+// }
+// // increate the threads running to sync with the monitor
+// void	increase_int(t_mtx *mtx, int *dest)
+// {
+// 	pthread_mutex_lock(mtx);
+// 	(*dest)++;
+// 	pthread_mutex_unlock(mtx);
+// }
+// void	*routine(void *data)
+// {
+// 	t_philo	*philo;
+// 	philo = (t_philo *)data;
+// 	wait_all_threads();
+// 	set_int(&philo->ph_mtx, &philo->last_meal_time, get_time());
+// 	increase_int(&tb()->tb_mtx, &tb()->threads_running_num);
+// 	while (!philo_finished())
+// 	{
+// 		if (philo->full)
+// 			break ;
+// 		eat(philo);
+// 		print_action(philo, A_SLEEP);
+// 		ft_usleep(tb()->time_to_sleep * 1000);
+// 		print_action(philo, A_THINK);
+// 	}
+// 	return (NULL);
+// }
+// int	all_thread_running(void)
+// {
+// 	int	ret;
+// 	ret = 0;
+// 	pthread_mutex_lock(&tb()->tb_mtx);
+// 	if (tb()->threads_running_num == tb()->n_of_philo)
+// 		ret = 1;
+// 	pthread_mutex_unlock(&tb()->tb_mtx);
+// 	return (ret);
+// }
+// int	philo_died(t_philo *philo)
+// {
+// 	int elapsed;
+// 	if (get_int(&philo->ph_mtx, &philo->full))
+// 		return (0);
+// 	elapsed = get_time() - get_int(&philo->ph_mtx, &philo->last_meal_time);
+// 	if (elapsed > tb()->time_to_die)
+// 	{
+// 		printf("philo %d died\n", philo->id);
+// 		return (1);
+// 	}
+// 	return (0);
+// }
+// void	*monitor(void *data)
+// {
+// 	int	i;
+// 	(void)data;
+// 	while (!all_thread_running())
+// 		;
+// 	while (!philo_finished())
+// 	{
+// 		i = -1;
+// 		while (++i < tb()->n_of_philo)
+// 		{
+// 			if (philo_died(&tb()->philos[i]))
+// 			{
+// 				set_int(&tb()->tb_mtx, &tb()->finished, 1);
+// 				print_action(&tb()->philos[i], A_DIE);
+// 			}
+// 		}
+// 	}
+// 	return (NULL);
+// }
+// void	*lone_philo(void *data)
+// {
+// 	t_philo	*philo;
+// 	philo = (t_philo *)data;
+// 	wait_all_threads();
+// 	set_int(&philo->ph_mtx, &philo->last_meal_time, get_time());
+// 	increase_int(&tb()->tb_mtx, &tb()->threads_running_num);
+// 	print_action(philo, A_SLEEP);
+// 	while (!philo_finished())
+// 		ft_usleep(200);
+// 	return (NULL);
+// }
 
 void	dinner_start(void)
 {
