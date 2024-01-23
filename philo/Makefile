@@ -14,7 +14,7 @@ OBJDIR	= objs
 SRC		= $(wildcard *.c)
 OBJ		= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
 
-all:	$(NAME) clean
+all:	$(NAME)
 
 $(NAME): $(OBJ)
 	@cc $(CFLAGS) $^ -o $@
