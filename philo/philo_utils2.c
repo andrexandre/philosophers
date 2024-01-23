@@ -1,43 +1,40 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_utils2.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: andrealex <andrealex@student.42.fr>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/23 19:10:05 by andrealex         #+#    #+#             */
+/*   Updated: 2024/01/23 19:10:06 by andrealex        ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-long	get_time(void)
+void	ft_usleep(size_t time)
 {
-	struct timeval	tv;
+	size_t	st;
 
-	if (gettimeofday(&tv, NULL))
-		return (-1);
-	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+	st = get_time();
+	while ((get_time() - st) < time && finished())
+		usleep(time / 10);
 }
 
-void	print_action(t_philo *philo, enum e_action action)
+void	print_message(char *str, t_philo *philo)
 {
-	int		elapsed;
+	size_t	time;
 
-	elapsed = get_time() - tb()->start_time;
-	if (philo->full)
+	if (!finished())
 		return ;
-	pthread_mutex_lock(&tb()->print);
-	if (philo_finished())
-		return ;
-	if (action == A_FFORK || action == A_SFORK)
-		printf(WHITE "%d %d has taken a fork" , elapsed, philo->id);
-	else if (action == A_EAT)
-		printf(YELLOW "%d %d is eating\n" RESET, elapsed, philo->id);
-	else if (action == A_SLEEP)
-		printf(BLUE "%d %d is sleeping\n" RESET, elapsed, philo->id);
-	else if (action == A_THINK)
-		printf(GREEN "%d %d is thinking\n" RESET, elapsed, philo->id);
-	else if (action == A_DIE)
-		printf(RED "%d %d died\n" RESET, elapsed, philo->id);
-	if (action == A_FFORK)
-		printf(" 1st fork [ %d ]\n"RESET, philo->first_fork->id);
-	else if (action == A_SFORK)
-		printf(" 2nd fork [ %d ]\n"RESET, philo->second_fork->id);
-	pthread_mutex_unlock(&tb()->print);
+	pthread_mutex_lock(&tb()->print_mtx);
+	time = get_time();
+	printf("%zu %d %s\n", time - tb()->start_time, philo->id, str);
+	pthread_mutex_unlock(&tb()->print_mtx);
 }
 
 // mtx is the mutex you want to lock, dest is the int you want to get
-int	get_int(t_mtx *mtx, int *dest)
+int	get_int(pthread_mutex_t *mtx, int *dest)
 {
 	int	ret;
 
@@ -49,14 +46,27 @@ int	get_int(t_mtx *mtx, int *dest)
 
 // mtx is the mutex you want to lock, dest is the int you want to set
 // value is the value you want to set dest to
-void	set_int(t_mtx *mtx, int *dest, int value)
+void	set_int(pthread_mutex_t *mtx, int *dest, int value)
 {
 	pthread_mutex_lock(mtx);
 	*dest = value;
 	pthread_mutex_unlock(mtx);
 }
 
-int	philo_finished(void)
+void	clean_table(void)
 {
-	return (get_int(&tb()->tb_mtx, &tb()->finished));
+	int	i;
+
+	i = -1;
+	while (++i < tb()->n_of_philo)
+		if (pthread_join(tb()->philos[i].thread, 0))
+			printf("error: pthread_join\n");
+	i = -1;
+	while (++i < tb()->n_of_philo)
+		pthread_mutex_destroy(&tb()->forks[i]);
+	pthread_mutex_destroy(&tb()->tb_mtx);
+	pthread_mutex_destroy(&tb()->print_mtx);
+	pthread_mutex_destroy(&tb()->finished_mtx);
+	free(tb()->forks);
+	free(tb()->philos);
 }
