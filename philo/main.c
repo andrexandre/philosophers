@@ -6,7 +6,7 @@
 /*   By: andrealex <andrealex@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:09:53 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/23 19:09:54 by andrealex        ###   ########.fr       */
+/*   Updated: 2024/01/23 19:22:44 by andrealex        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,8 @@ int	main(int argc, char **argv)
 {
 	if (error(argc, argv))
 		return (-1);
+	if (!tb()->meals_needed)
+		return (0);
 	(tb()->forks) = ft_calloc(tb()->n_of_philo, sizeof(pthread_mutex_t));
 	if (!tb()->forks)
 		return (printf("error: malloc\n"), 1);
