@@ -11,7 +11,7 @@ CFLAGS	= -Wall -Wextra -Werror -g -pthread# -fsanitize=thread
 
 OBJDIR	= objs
 
-SRC		= $(wildcard *.c)
+SRC		= main.c monitor.c philo_utils.c philo_utils2.c
 OBJ		= $(patsubst %.c, $(OBJDIR)/%.o, $(SRC))
 
 all:	$(NAME)
@@ -37,8 +37,12 @@ fclean:	clean
 
 re:	fclean all
 
+# VAR = 1 800 200 200
+# VAR = 5 800 200 200
 VAR = 5 800 200 200 7
-# VAR = 5
+# VAR = 4 410 200 200
+# VAR = 4 310 200 100
+# VAR = 4 100
 
 run: ${NAME}
 	@./${NAME} ${VAR}

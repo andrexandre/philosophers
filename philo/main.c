@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andrealex <andrealex@student.42.fr>        +#+  +:+       +#+        */
+/*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:09:53 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/23 19:22:44 by andrealex        ###   ########.fr       */
+/*   Updated: 2024/01/24 13:52:35 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	eat(t_philo *philo)
 {
-	pthread_mutex_lock(&tb()->forks[philo->second_fork]);
-	print_message("has taken a fork", philo);
 	pthread_mutex_lock(&tb()->forks[philo->first_fork]);
+	print_message("has taken a fork", philo);
+	pthread_mutex_lock(&tb()->forks[philo->second_fork]);
 	print_message("has taken a fork", philo);
 	pthread_mutex_lock(&tb()->tb_mtx);
 	print_message("is eating", philo);
@@ -26,8 +26,8 @@ void	eat(t_philo *philo)
 	pthread_mutex_lock(&tb()->tb_mtx);
 	philo->meals_eaten++;
 	pthread_mutex_unlock(&tb()->tb_mtx);
-	pthread_mutex_unlock(&tb()->forks[philo->first_fork]);
 	pthread_mutex_unlock(&tb()->forks[philo->second_fork]);
+	pthread_mutex_unlock(&tb()->forks[philo->first_fork]);
 }
 
 void	*routine(void *arg)
@@ -71,12 +71,12 @@ int	init_table(void)
 	{
 		tb()->philos[i].id = i + 1;
 		tb()->philos[i].last_meal_time = get_time();
-		tb()->philos[i].first_fork = (i + 1) % tb()->n_of_philo;
-		tb()->philos[i].second_fork = i;
+		tb()->philos[i].first_fork = i;
+		tb()->philos[i].second_fork = (i + 1) % tb()->n_of_philo;
 		if (i % 2 == 0)
-			tb()->philos[i].first_fork = i;
+			tb()->philos[i].first_fork = (i + 1) % tb()->n_of_philo;
 		if (i % 2 == 0)
-			tb()->philos[i].second_fork = (i + 1) % tb()->n_of_philo;
+			tb()->philos[i].second_fork = i;
 		if (pthread_create(&tb()->philos[i].thread, NULL, &routine,
 				&tb()->philos[i]))
 			return (printf("error: pthread create"), 1);
