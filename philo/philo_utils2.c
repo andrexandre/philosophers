@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andrealex <andrealex@student.42.fr>        +#+  +:+       +#+        */
+/*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:10:05 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/23 19:10:06 by andrealex        ###   ########.fr       */
+/*   Updated: 2024/01/24 17:44:28 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	clean_table(void)
 	i = -1;
 	while (++i < tb()->n_of_philo)
 		pthread_mutex_destroy(&tb()->forks[i]);
-	pthread_mutex_destroy(&tb()->tb_mtx);
 	pthread_mutex_destroy(&tb()->print_mtx);
 	pthread_mutex_destroy(&tb()->finished_mtx);
 	free(tb()->forks);

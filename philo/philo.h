@@ -6,7 +6,7 @@
 /*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:10:18 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/24 13:52:57 by analexan         ###   ########.fr       */
+/*   Updated: 2024/01/24 17:44:30 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_table
 	size_t			time_to_sleep;
 	size_t			start_time;
 	pthread_mutex_t	print_mtx;
-	pthread_mutex_t	tb_mtx;
 	pthread_mutex_t	finished_mtx;
 	pthread_mutex_t	*forks;
 	t_philo			*philos;

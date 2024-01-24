@@ -6,7 +6,7 @@
 /*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:09:53 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/24 13:52:35 by analexan         ###   ########.fr       */
+/*   Updated: 2024/01/24 17:50:50 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,10 @@ void	eat(t_philo *philo)
 	print_message("has taken a fork", philo);
 	pthread_mutex_lock(&tb()->forks[philo->second_fork]);
 	print_message("has taken a fork", philo);
-	pthread_mutex_lock(&tb()->tb_mtx);
 	print_message("is eating", philo);
-	philo->last_meal_time = get_time();
-	pthread_mutex_unlock(&tb()->tb_mtx);
 	ft_usleep(tb()->time_to_eat);
-	pthread_mutex_lock(&tb()->tb_mtx);
+	philo->last_meal_time = get_time();
 	philo->meals_eaten++;
-	pthread_mutex_unlock(&tb()->tb_mtx);
 	pthread_mutex_unlock(&tb()->forks[philo->second_fork]);
 	pthread_mutex_unlock(&tb()->forks[philo->first_fork]);
 }
@@ -59,7 +55,7 @@ int	init_table(void)
 {
 	int	i;
 
-	pthread_mutex_init(&tb()->tb_mtx, NULL);
+	tb()->finished = 1;
 	pthread_mutex_init(&tb()->print_mtx, NULL);
 	pthread_mutex_init(&tb()->finished_mtx, NULL);
 	i = -1;
@@ -124,7 +120,6 @@ int	main(int argc, char **argv)
 	(tb()->philos) = ft_calloc(tb()->n_of_philo, sizeof(t_philo));
 	if (!tb()->philos)
 		return (free(tb()->forks), printf("error: malloc\n"), 1);
-	tb()->finished = 1;
 	if (init_table())
 		return (-1);
 	monitor();

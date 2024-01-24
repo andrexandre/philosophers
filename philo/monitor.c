@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: andrealex <andrealex@student.42.fr>        +#+  +:+       +#+        */
+/*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:09:58 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/23 19:09:59 by andrealex        ###   ########.fr       */
+/*   Updated: 2024/01/24 18:20:04 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ static void	check_full(void)
 	int	i;
 
 	i = 0;
-	pthread_mutex_lock(&tb()->tb_mtx);
 	while (tb()->meals_needed != -1 && i < tb()->n_of_philo
 		&& tb()->philos[i].meals_eaten >= tb()->meals_needed)
 		i++;
@@ -39,7 +38,6 @@ static void	check_full(void)
 	if (i >= tb()->n_of_philo)
 		tb()->finished = 0;
 	pthread_mutex_unlock(&tb()->finished_mtx);
-	pthread_mutex_unlock(&tb()->tb_mtx);
 }
 
 static void	check_death(void)
@@ -50,14 +48,12 @@ static void	check_death(void)
 	i = -1;
 	while (++i < tb()->n_of_philo && finished())
 	{
-		pthread_mutex_lock(&tb()->tb_mtx);
 		time = get_time();
 		if ((time - tb()->philos[i].last_meal_time) >= tb()->time_to_die)
 		{
 			print_message("died", &tb()->philos[i]);
 			set_int(&tb()->finished_mtx, &tb()->finished, 0);
 		}
-		pthread_mutex_unlock(&tb()->tb_mtx);
 	}
 }
 
