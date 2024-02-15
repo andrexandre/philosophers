@@ -6,7 +6,7 @@
 /*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:09:58 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/24 18:20:04 by analexan         ###   ########.fr       */
+/*   Updated: 2024/02/15 15:31:34 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ static void	check_full(void)
 	int	i;
 
 	i = 0;
+	// pthread_mutex_lock(&tb()->tb_mtx);
 	while (tb()->meals_needed != -1 && i < tb()->n_of_philo
 		&& tb()->philos[i].meals_eaten >= tb()->meals_needed)
 		i++;
+	// pthread_mutex_unlock(&tb()->tb_mtx);
 	pthread_mutex_lock(&tb()->finished_mtx);
 	if (i >= tb()->n_of_philo)
 		tb()->finished = 0;

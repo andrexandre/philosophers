@@ -6,7 +6,7 @@
 /*   By: analexan <analexan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/23 19:10:05 by andrealex         #+#    #+#             */
-/*   Updated: 2024/01/24 17:44:28 by analexan         ###   ########.fr       */
+/*   Updated: 2024/02/15 15:26:13 by analexan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_usleep(size_t time)
 
 	st = get_time();
 	while ((get_time() - st) < time && finished())
-		usleep(time / 10);
+		usleep(10);
 }
 
 void	print_message(char *str, t_philo *philo)
