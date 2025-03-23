@@ -16,7 +16,7 @@ In this project, each philosopher is a thread, and each fork is a mutex. The phi
 git clone https://github.com/andrexandre/philosophers.git ; cd philosophers/philo
 ```
 
-2. Compile the library
+2. Compile the program
 ```sh
 make
 ```
